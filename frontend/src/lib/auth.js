@@ -1,0 +1,3 @@
+export function saveSession(data){localStorage.setItem('amp_token',data.token);localStorage.setItem('amp_user',JSON.stringify(data.user));if(data.workspace)localStorage.setItem('amp_workspace',JSON.stringify(data.workspace))}
+export function getUser(){try{return JSON.parse(localStorage.getItem('amp_user')||'null')}catch{return null}}
+export function clearSession(){localStorage.removeItem('amp_token');localStorage.removeItem('amp_user');localStorage.removeItem('amp_workspace')}

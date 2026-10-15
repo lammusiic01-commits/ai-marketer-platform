@@ -1,0 +1,5 @@
+In-app Browser JS state was preserved. Completed actions were not rolled back; refresh stale UI handles and continue only the remaining work.
+{"code":"BROWSER_ERROR","method":"browser_upload_file","callIndex":7,"nextAction":"inspect_before_retry"}
+upload file is not available: C:\Users\user\Desktop\AI-Marketer-Platform\.work\deploy\ai-marketer\app
+ERROR STALE_PAGE
+{"control":{"documentRevision":"rev_a8a94e43-d570-4f74-a5f8-54f213356681","error":{"code":"STALE_PAGE","retryable":true},"requiresSnapshot":true,"status":"error","tabId":"tab_0908bc5f-b382-42e6-b49b-b8af6b6d8253"},"kind":"error","schema":"manus.browser/v1"}

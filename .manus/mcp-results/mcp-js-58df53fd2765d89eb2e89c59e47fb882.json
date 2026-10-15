@@ -1,0 +1,5 @@
+In-app Browser JS state was reset; rebuild state before continuing.
+Browser cell stopped: ACTION_IN_DOUBT
+{"method":"browser_snapshot","warnings":["1 older browser snapshot were evicted by the bounded snapshot registry."]}
+ERROR ACTION_IN_DOUBT
+{"control":{"documentRevision":"rev_94702594-45a8-40f9-b94d-7f75a6e4310d","error":{"code":"ACTION_IN_DOUBT","retryable":false},"requiresSnapshot":true,"status":"in_doubt","tabId":"tab_0908bc5f-b382-42e6-b49b-b8af6b6d8253"},"kind":"error","schema":"manus.browser/v1"}

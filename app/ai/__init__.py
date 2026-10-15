@@ -1,0 +1,1 @@
+"""AI integrations pinned to the required OpenRouter model."""

@@ -1,0 +1,26 @@
+import { useQuery } from '@tanstack/react-query'
+import { Link } from 'react-router-dom'
+import { Activity, ArrowRight, Check, CheckSquare2, ShieldAlert, Target, TrendingUp, WalletCards } from 'lucide-react'
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import api, { messageOf } from '../../lib/api'
+import { prettyDate, rubles } from '../../lib/utils'
+import MetricCard from '../../components/MetricCard'
+import MotionList from '../../components/motion/MotionList'
+import { Button, Card, EmptyState, Notice, Spinner } from '../../components/ui'
+
+const demoData = [{ d: '15 сен', v: 320 }, { d: '20 сен', v: 385 }, { d: '25 сен', v: 350 }, { d: '30 сен', v: 470 }, { d: '5 окт', v: 455 }, { d: '10 окт', v: 540 }, { d: '14 окт', v: 602 }]
+
+export default function ProjectOverview({ project }) {
+  const query = useQuery({ queryKey: ['project-overview', project.id], queryFn: async () => (await api.get(`/projects/${project.id}/dashboard`)).data })
+  const data = query.data
+  if (query.isLoading) return <Spinner label="Загружаем обзор проекта…" />
+
+  return <div className="page-stack"><div className="tool-heading"><div><span className="eyebrow">ПРОЕКТ / ОБЗОР</span><h2>Обзор</h2><p>Сводная картина каналов, эффективности и ближайших решений.</p></div></div>
+    {query.isError ? <Card className="overview-error-card"><Notice tone="danger">Не удалось загрузить обзор: {messageOf(query.error)}</Notice><Button variant="secondary" onClick={() => query.refetch()}>Повторить</Button></Card> : <>
+      <Notice tone="info">{data?.metrics_note || 'Внешние источники пока не синхронизированы. Здесь не показываются вымышленные показатели.'}</Notice>
+      <div className="metrics-grid"><MetricCard label="Трафик" value={data?.traffic == null ? '—' : new Intl.NumberFormat('ru-RU').format(data.traffic)} icon={Activity} tone="blue" note={data?.traffic == null ? 'Нет синхронизированных данных' : 'Визиты · последние 30 дней'} /><MetricCard label="Расход за месяц" value={data?.spend == null ? '—' : rubles(data.spend)} icon={WalletCards} tone="indigo" note={data?.spend == null ? 'Нет синхронизированных данных' : 'Рекламный бюджет'} /><MetricCard label="Конверсии" value={data?.conversions == null ? '—' : data.conversions} icon={Target} tone="green" note={data?.conversions == null ? 'Нет синхронизированных данных' : 'Цели аналитики'} /><MetricCard label="Подозрительный трафик" value={data?.bot_pct == null ? '—' : `${data.bot_pct}%`} icon={ShieldAlert} tone="red" note={data?.bot_pct == null ? 'Нет измерений Bot Shield' : 'Оценка Bot Shield'} /></div>
+      <div className="project-overview-grid"><Card className="chart-card"><div className="card-heading"><div><h2>Трафик проекта</h2><p>Демонстрационный пример графика — не данные проекта</p></div><span className="subtle-label">ДЕМО-СРЕЗ</span></div><div className="overview-chart"><ResponsiveContainer width="100%" height="100%"><AreaChart data={demoData} margin={{ top: 10, right: 6, left: -24, bottom: 0 }}><defs><linearGradient id="project-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#7773f3" stopOpacity={.24} /><stop offset="100%" stopColor="#7773f3" stopOpacity={0} /></linearGradient></defs><CartesianGrid stroke="#27272a" vertical={false} /><XAxis dataKey="d" tick={{ fill: '#71717a', fontSize: 11 }} axisLine={false} tickLine={false} /><YAxis tick={{ fill: '#71717a', fontSize: 11 }} axisLine={false} tickLine={false} /><Tooltip contentStyle={{ background: '#18181b', border: '1px solid #303036', borderRadius: 8, color: '#fafafa' }} /><Area type="monotone" dataKey="v" stroke="#9b98ff" fill="url(#project-fill)" strokeWidth={2} /></AreaChart></ResponsiveContainer></div></Card><Card className="insight-card"><div className="card-heading"><div><span className="insight-icon"><TrendingUp size={17} /></span><h2>Следующий шаг</h2></div></div><div className="insight-body"><div className="insight-tag">НАЧНИТЕ С ДАННЫХ</div><h3>Проверьте техническое состояние сайта</h3><p>SEO-аудит зафиксирует отправную точку и поможет выбрать несколько быстрых улучшений.</p><Link className="text-link" to={`/app/projects/${project.id}/seo`}>Запустить SEO-аудит <ArrowRight size={14} /></Link></div></Card></div>
+      <Card className="activity-card"><div className="card-heading"><div><h2>Открытые задачи</h2><p>Работа по проекту</p></div><Link className="text-link" to={`/app/projects/${project.id}/tasks`}>К канбану <ArrowRight size={14} /></Link></div>{data?.tasks?.length ? <MotionList className="project-open-task-list" itemClassName="project-open-task-item" stagger={.025}>{data.tasks.slice(0, 5).map(task => <div className="today-row" key={task.id}><span className="task-check" /><span>{task.title}</span><span className="muted">{task.status === 'in_progress' ? 'В работе' : task.status === 'review' ? 'На проверке' : 'В очереди'}</span>{task.due_date && <small>{prettyDate(task.due_date)}</small>}</div>)}</MotionList> : <EmptyState icon={Check} title="Открытых задач нет" body="Создайте задачу, чтобы запланировать улучшения проекта." action={<Link className="btn btn-secondary btn-small" to={`/app/projects/${project.id}/tasks`}>Открыть задачи</Link>} />}</Card>
+    </>}
+  </div>
+}

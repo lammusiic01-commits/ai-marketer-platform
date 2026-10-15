@@ -1,0 +1,4 @@
+def suggest_campaign_structure(project: dict, insights: list[dict] | None = None) -> dict:
+    return {"campaigns":[{"name":"Поиск · горячий спрос","type":"search","groups":["Брендовые запросы","Категорийные запросы","Конкурентные запросы"]},{"name":"Ретаргетинг · возврат аудитории","type":"retargeting","groups":["Посетители каталога","Брошенные заявки"]}],"notes":["Разделяйте брендовый и общий спрос","Задайте отдельные цели и недельные лимиты"]}
+def optimize_bids(stats: list[dict], target_cpa: float) -> list[dict]:
+    return [{"keyword":r.get("keyword",""),"current_bid":r.get("bid",0),"action":"decrease" if r.get("cpa",0)>target_cpa else "hold","suggested_bid":round(r.get("bid",0)*(.85 if r.get("cpa",0)>target_cpa else 1),2)} for r in stats]

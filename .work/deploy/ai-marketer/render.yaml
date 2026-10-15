@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: ai-marketer
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: OPENROUTER_MODEL
+        value: apodex/apodex-1.1-mini:free
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true

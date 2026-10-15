@@ -1,0 +1,1 @@
+"""AI Marketer Platform application package."""
